@@ -9,7 +9,7 @@ addpath('../src/PHY');
 
 %%%%%%%%%%%%%%%%%%%  Initialisation des variables  %%%%%%%%%%%%%%%%%%%%
 %Variables gÃ©nÃ©ral
-TEB_activation = true;
+TEB_activation = false;
 
 M = 2;          % Nombre de symboles
 Fe = 2*1e7;       % frÃ©quence d'Ã©chantillonage
@@ -17,7 +17,7 @@ Te = 1/Fe;      % PÃ©riode d'Ã©chantillonage
 Ts = 1e-6;      % Temps Symbole
 Ds = 1/Ts;       % Debit symbole
 Fse = Ts*Fe;    % Facteur de sur-Ã©chantillonnage
-Ns = 10;      % Nombre de symbole/bits par messages
+Ns = 100;      % Nombre de symbole/bits par messages
 Nb = Ns;        % Nombre de bits par messages on a ï¿½galitï¿½ cas particulier d'une 2 PAM
 N = 512;        % Nombre de points pour la transformÃ© de fourrier
 axe_freq = -Fe/2 : Fe/N : Fe/2 - Fe/N; % crï¿½ation de l'axe frï¿½quentielle pour le tracï¿½ de rï¿½sultats
@@ -27,7 +27,7 @@ lambda = 1;
 %Variables pour le TEB
 
 Eb = 5;%10
-eb_sur_No_db = 0:1:10; % création du vecteur qui contient les vecteur espacé de 0.5 pour le tracé de la TEB
+eb_sur_No_db = 0:0.01:10; % création du vecteur qui contient les vecteur espacé de 0.5 pour le tracé de la TEB
 eb_sur_no_dc = 10.^(eb_sur_No_db./10);% Calcule du vecteur qui contient les vecteurs espacé en decimale pour la TEB
 sigma = sqrt((1/2)*(1./eb_sur_no_dc)*Eb);%NO/2 % vecteur qui réprésente l'ensemble des sigma a injecter dans la teb
 TEB = zeros(1,size(sigma,2)); % initialisation du vecteur de la teb
@@ -73,7 +73,7 @@ yl = Canal(sl,ecart_type);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%  Filtre de reception  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[rl,rl_ech] = Recepteur(yl,p_inverse,Fse,Ns); % dans le code d'avant il y avait +1 a comprendre a quoi ca sert et pk on en a pas besion
+[rl,rl_ech] = Recepteur(yl,p,Fse,Ns); % dans le code d'avant il y avait +1 a comprendre a quoi ca sert et pk on en a pas besion
 
 % vÃ©rifier avec le prof si le filtre marche bien et pourqoi on a
 % diffÃ©rentes valeurs
@@ -81,8 +81,6 @@ yl = Canal(sl,ecart_type);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Decision%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 signal_recu = Decision(rl_ech);
 nb_erreur = 0;
-
-
 for i=1:size(signal_recu,2)
                  if (signal_recu(i) ~= signal_bits(i))
                      nb_erreur = nb_erreur + 1
@@ -143,9 +141,9 @@ plot(linspace(0,Ns-1,Ns),signal_bits);
 figure;
 plot(linspace(0,length(sl)-1,length(sl)),sl);
 
- %ReprÃ©sentation de rl
- figure;
- plot(linspace(0,length(rl)-1,length(rl)),rl);
+% ReprÃ©sentation de rl
+% figure;
+% plot(linspace(0,length(rl)-1,length(rl)),rl);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Tracé de la TEB %%%%%%%%%%%%%%%%%%%%%%%%%
 figure;
