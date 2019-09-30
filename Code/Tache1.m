@@ -1,7 +1,7 @@
 %____________________________________________________________%
 %_______________Projet de Communication NumÃ©rique ___________%
 %____________________________________________________________%
-%____________Agnia Savina & Julien Choveton-Caillat__________%
+%____________Alexandra Abulaeva & Julien Choveton-Caillat__________%
 
 clear ;close all ; clc
 
@@ -25,10 +25,10 @@ Nb = Ns;        % Nombre de bits par messages on a ï¿½galitï¿½ cas particulier d
 
 %Variables pour le TEB
 
-Eb = 5;%10 % a trouver l'erreur binaire théorique donner par Yassine
-eb_sur_No_db = 0:1:10; % création du vecteur qui contient les vecteur espacé de 0.5 pour le tracé de la TEB
-eb_sur_no_dc = 10.^(eb_sur_No_db./10);% Calcule du vecteur qui contient les vecteurs espacé en decimale pour la TEB
-sigma = sqrt((1/2)*(1./eb_sur_no_dc)*Eb);%NO/2 % vecteur qui réprésente l'ensemble des sigma a injecter dans la teb
+Eb = 5;%10 % a trouver l'erreur binaire thï¿½orique donner par Yassine
+eb_sur_No_db = 0:1:10; % crï¿½ation du vecteur qui contient les vecteur espacï¿½ de 0.5 pour le tracï¿½ de la TEB
+eb_sur_no_dc = 10.^(eb_sur_No_db./10);% Calcule du vecteur qui contient les vecteurs espacï¿½ en decimale pour la TEB
+sigma = sqrt((1/2)*(1./eb_sur_no_dc)*Eb);%NO/2 % vecteur qui rï¿½prï¿½sente l'ensemble des sigma a injecter dans la teb
 TEB = zeros(1,size(sigma,2)); % initialisation du vecteur de la teb
 compteur_paquet = 0; % compteur necessaire au bon fonctionnement de la teb
 erreur = 0; % seuil d'erreur pour arrete un calcule le teb
@@ -47,7 +47,7 @@ p_inverse = fliplr(p);
 
 
 signal_bits = randi(2,1,Ns)-1; % gÃ©nÃ©ration du signal a envoyÃ©
-signal_bits = [1 0 0 1 0]
+signal_bits = [1 0 0 1 0];
 
 sl=[];
 for i=1:length(signal_bits)
@@ -96,10 +96,10 @@ if TEB_activation==true
          end
 
             while erreur < 100 % si le nombre d'erreur depasse 100 on sort de la boucle
-                % dans cette partie nous repetons le nombre de fois la partie précédente
+                % dans cette partie nous repetons le nombre de fois la partie prï¿½cï¿½dente
                 compteur_paquet = compteur_paquet+1;
                 
-                %génération du bruit du signal
+                %gï¿½nï¿½ration du bruit du signal
                 nl = sigma(k) * randn(1, length(sl));
                 yl=sl+nl;
                 %reception du signal
@@ -107,7 +107,7 @@ if TEB_activation==true
                 rm = rl(Fse:Fse:Fse*Ns);      
 
 
-                %Filtre de décision
+                %Filtre de dï¿½cision
                 signal_recu_teb=[];
                 for j=1:length(rm)
                     if(rm(j)<0)

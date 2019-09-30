@@ -9,7 +9,7 @@ addpath('Client', 'General', 'MAC', 'PHY');
 DISPLAY_MASK = '| %12.12s | %10.10s | %6.6s | %3.3s | %6.6s | %3.3s | %8.8s | %11.11s | %4.4s | %12.12s | %12.12s | %3.3s |\n'; % Format pour l'affichage
 CHAR_LINE = '+--------------+------------+--------+-----+--------+-----+----------+-------------+------+--------------+--------------+-----+\n'; % Lignes
 
-SERVER_ADDRESS = '';
+SERVER_ADDRESS = 'artiche';
 
 % Coordonnees de reference (endroit de l'antenne)
 REF_LON = -0.606629; % Longitude de l'ENSEIRB-Matmeca
