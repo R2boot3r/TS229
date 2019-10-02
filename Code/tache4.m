@@ -19,11 +19,6 @@ Ds = 1/Ts;       % Debit symbole
 Fse = Ts*Fe;    % Facteur de sur-échantillonnage
 Ns = 88;      % Nombre de symbole/bits par messages
 Nb = Ns;        % Nombre de bits par messages on a �galit� cas particulier d'une 2 PPM
-Npolynome=24;%taille du polynome generateur
-tailletotale=Nb+Npolynome; %taille totale de la trame
-polynomial=[1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 1 0 0 1];%polynome generateur
-h=crc.generator(polynomial);%generateur crc
-g=crc.detector(polynomial);%detecteur crc
 
 
 
@@ -41,52 +36,46 @@ p_inverse = fliplr(p);
 
 signal_bits = randi(2,1,Ns)-1; % génération du signal a envoyé
 
-%codage CRC
-msg = reshape(signal_bits,88,1);
-encoded=generate(h,msg);%colonne
-signal_bits_code=encoded';%ligne
 
-%ajout preambule 01010101?
-pream=[po po po po po po po po];
 
-sl=pream;
-for i=length(pream):length(signal_bits_code)
-    if signal_bits_code(i) == 0       
+sl=[];
+for i=1:length(signal_bits)
+    if signal_bits(i) == 0       
         sl=[sl po];       
     else    
         sl=[sl p1];
     end
 end
-
+%canal
 ecart_type = 0;
 nl = ecart_type * randn(1, length(sl));
 
 yl=sl+nl;
-rl = conv(yl, p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te
 
-rm = rl(Fse:Fse:Fse*(tailletotale+length(pream)));%taille crc
+%module au carré 
+rl=abs(yl).^2;
 
-signal_recu_code=[];
-for k=1:length(rm)
-    if(rm(k)<0)
-        signal_recu_code(k)=1;
+%synchronisation
+
+
+vl = conv(rl, p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te
+
+vm = vl(Fse:Fse:Fse*(Ns));
+
+signal_recu=[];
+for k=1:length(vm)
+    if(vm(k)<0)
+        signal_recu(k)=1;
     else
-        signal_recu_code(k)=0;
+        signal_recu(k)=0;
     end
 end
 
 
-%decodeur crc
-[outdata error] = detect(g, signal_recu_code');
-signal_recu=outdata';%information decode
 
 
 
-if error==0
-    disp("message est integre en l absence d erreur");
-else
-    disp("message n'est pas integre en l absence d erreur parmis les 88 bits de données utile")
-end
+
     
 
 
