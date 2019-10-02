@@ -47,7 +47,7 @@ encoded=generate(h,msg);%colonne
 signal_bits_code=encoded';%ligne
 
 %ajout preambule 01010101
-pream=[0 1 0 1 0 1 0 1];
+pream=[po po po po po po po po];%equivalent a 8 bits
 
 sl=pream;
 for i=length(pream)+1:length(signal_bits_code)+length(pream)%ajout preambule et modulation uniquement pour l information utile

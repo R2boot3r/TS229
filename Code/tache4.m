@@ -37,20 +37,23 @@ p_inverse = fliplr(p);
 signal_bits = randi(2,1,Ns)-1; % génération du signal a envoyé
 
 
+%ajout preambule 01010101
+pream=[0 1 0 1 0 1 0 1];
 
-sl=[];
-for i=1:length(signal_bits)
-    if signal_bits(i) == 0       
+sl=pream;
+for i=length(pream)+1:length(signal_bits)+length(pream)%ajout preambule et modulation uniquement pour l information utile
+    if signal_bits(i-length(pream)) == 0       
         sl=[sl po];       
     else    
         sl=[sl p1];
     end
 end
-%canal
+
 ecart_type = 0;
 nl = ecart_type * randn(1, length(sl));
 
 yl=sl+nl;
+yl=yl(length(pream):1:length(yl)); %on traite uniquement l information utile
 
 %module au carré 
 rl=abs(yl).^2;
