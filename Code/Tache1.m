@@ -8,7 +8,7 @@ clear ;close all ; clc
 
 %%%%%%%%%%%%%%%%%%%  Variables D'activation  %%%%%%%%%%%%%%%%%%%%
 %Variables gén
-TEB_activation = false;
+TEB_activation = true;
 Affichage_courbe = true;
 
 %%%%%%%%%%%%%%%%%%%  Initialisation des variables  %%%%%%%%%%%%%%%%%%%%
@@ -20,7 +20,7 @@ Te = 1/Fe;      % Période d'échantillonage
 Ts = 1e-6;      % Temps Symbole
 Ds = 1/Ts;       % Debit symbole
 Fse = Ts*Fe;    % Facteur de sur-échantillonnage
-Ns = 5;      % Nombre de symbole/bits par messages
+Ns = 1000;      % Nombre de symbole/bits par messages
 Nb = Ns;        % Nombre de bits par messages on a �galit� cas particulier d'une 2 PPM
 
 %Variables pour le TEB
@@ -47,7 +47,7 @@ p_inverse = fliplr(p);
 
 
 signal_bits = randi(2,1,Ns)-1; % génération du signal a envoyé
-signal_bits = [1 0 0 1 0];
+%signal_bits = [1 0 0 1 0];
 
 sl=[];
 for i=1:length(signal_bits)
@@ -138,10 +138,10 @@ pb = 1/2*erfc(sqrt(eb_sur_no_dc));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%  Figures de résultats  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if Affichage_courbe==true
-    tiledlayout(2,1)
+
     % Représentation de sl(t)
     
-    nexttile;
+    figure;
     plot(linspace(0,50*Ts-Te,length(sl)),sl,'linewidth',2);
     title("Allure temporelle de sl(t)");
     xlabel("t en secondes");
@@ -149,7 +149,7 @@ if Affichage_courbe==true
 
     % Représentation de rl(t)
 
-    nexttile;
+    figure;
     plot(linspace(0,50*Ts-Te,length(rl)),rl,'g','linewidth',2);
     title("Allure temporelle de rl(t)");
     xlabel("t en secondes");
@@ -157,7 +157,7 @@ if Affichage_courbe==true
    
     % Représentation de rm(t)
     
-    nexttile;
+    figure;
     plot(linspace(0,50*Ts-Te,length(rm)),rm,'r','linewidth',2);
     title("Allure temporelle de rm(t)");
     xlabel("t en secondes");
@@ -176,3 +176,7 @@ if Affichage_courbe==true
     set(gca,'FontSize',14);
    end
 end
+
+
+%commentaire
+%Energie du filtre pas calculer de mani�re automatique � faire  Eb est d�finie a la main. 

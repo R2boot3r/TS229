@@ -92,12 +92,10 @@ signal_recu=outdata';% information decode
 
 
 if error==0
-    disp("message est integre en l'absence d erreur");
+    disp("message est integre en l absence d erreur");
 else
-    disp("message n'est pas integre en l'absence d'erreur parmis les 112 bits de données ")
+    disp("message n'est pas integre en l absence d erreur parmis les 88 bits de données utile")
 end
     
-%%commentaire prof 
-% quand on detect une erreur on ne sait pas si il y a une erreur sur le crc
-% ou sur le message utile
+
 
