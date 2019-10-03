@@ -37,8 +37,9 @@ p_inverse = fliplr(p);
 signal_bits = randi(2,1,Ns)-1; % génération du signal a envoyé
 
 
-%ajout preambule 01010101
-pream=[0 1 0 1 0 1 0 1];
+
+%ajout preambule 
+pream=[ones(1,Fse/2) zeros(1,Fse/2) ones(1,Fse/2) zeros(1,Fse/2) zeros(1,Fse/2) zeros(1,Fse/2) zeros(1,Fse/2) ones(1,Fse/2) zeros(1,Fse/2) ones(1,Fse/2) zeros(1,Fse/2) zeros(1,Fse/2) zeros(1,Fse/2) zeros(1,Fse/2) zeros(1,Fse/2) zeros(1,Fse/2)];%equivalent a 8 bits
 
 sl=pream;
 for i=length(pream)+1:length(signal_bits)+length(pream)%ajout preambule et modulation uniquement pour l information utile
@@ -53,12 +54,13 @@ ecart_type = 0;
 nl = ecart_type * randn(1, length(sl));
 
 yl=sl+nl;
-yl=yl(length(pream):1:length(yl)); %on traite uniquement l information utile
+yl=yl(length(pream):1:length(yl)); % on traite uniquement l information utile
 
 %module au carré 
 rl=abs(yl).^2;
 
 %synchronisation
+
 
 
 vl = conv(rl, p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te

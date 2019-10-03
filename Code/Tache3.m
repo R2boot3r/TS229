@@ -19,11 +19,12 @@ Ds = 1/Ts;       % Debit symbole
 Fse = Ts*Fe;    % Facteur de sur-échantillonnage
 Ns = 88;      % Nombre de symbole/bits par messages
 Nb = Ns;        % Nombre de bits par messages on a �galit� cas particulier d'une 2 PPM
-Npolynome=24;%taille du polynome generateur
-tailletotale=Nb+Npolynome; %taille totale de la trame
-polynomial=[1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 1 0 0 1];%polynome generateur
-h=crc.generator(polynomial);%generateur crc
-g=crc.detector(polynomial);%detecteur crc
+Npolynome = 24;% taille du polynome generateur
+tailletotale = Nb+Npolynome; % taille totale de la trame
+polynomial = [1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 1 0 0 1]; % polynome generateur
+generator = crc.generator(polynomial); % generateur crc
+detector = crc.detector(polynomial); % detecteur crc
+
 
 
 
@@ -36,22 +37,29 @@ p1 = [ones(1,Fse/2) zeros(1,Fse/2)];
 p = [-0.5*ones(1,Fse/2) 0.5*ones(1,Fse/2)];
 p_inverse = fliplr(p);
 
+pream = [po po po po po po po po]; % preambule equivalent a 8 bits
+lenpream=length(pream);
 
 
 
-signal_bits = randi(2,1,Ns)-1; % génération du signal a envoyé
+
+
+
+
+signal_bits = randi(2,1,Ns)-1; % génération du sipream = [po po po po po po po po]; % preambule equivalent a 8 bits
+lenpream=length(pream);
 
 %codage CRC
-msg = reshape(signal_bits,88,1);
-encoded=generate(h,msg);%colonne
-signal_bits_code=encoded';%ligne
+msg = signal_bits'; %reshape(signal_bits,88,1);
+encoded = generate(generator,msg); % colonne
+signal_bits_code = encoded'; % ligne
 
-%ajout preambule 01010101
-pream=[po po po po po po po po];%equivalent a 8 bits
+%ajout preambule 
 
-sl=pream;
-for i=length(pream)+1:length(signal_bits_code)+length(pream)%ajout preambule et modulation uniquement pour l information utile
-    if signal_bits_code(i-length(pream)) == 0       
+
+sl = pream;
+for i= lenpream+1:length(signal_bits_code)+lenpream% ajout preambule et modulation uniquement pour l information utile
+    if signal_bits_code(i-lenpream) == 0       
         sl=[sl po];       
     else    
         sl=[sl p1];
@@ -61,11 +69,11 @@ end
 ecart_type = 0;
 nl = ecart_type * randn(1, length(sl));
 
-yl=sl+nl;
-yl=yl(length(pream):1:length(yl)); %on traite uniquement l information utile
+yl= sl+nl;
+yl= yl(length(pream):1:length(yl)); % on traite uniquement l information utile
 rl = conv(yl, p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te
 
-rm = rl(Fse:Fse:Fse*(tailletotale));%taille crc
+rm = rl(Fse:Fse:Fse*(tailletotale));% taille crc
 
 signal_recu_code=[];
 for k=1:length(rm)
@@ -77,9 +85,9 @@ for k=1:length(rm)
 end
 
 
-%decodeur crc
-[outdata error] = detect(g, signal_recu_code');
-signal_recu=outdata';%information decode
+%% decodeur crc
+[outdata error] = detect(detector, signal_recu_code');
+signal_recu=outdata';% information decode
 
 
 
