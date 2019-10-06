@@ -38,7 +38,7 @@ p = [-0.5*ones(1,Fse/2) 0.5*ones(1,Fse/2)];
 p_inverse = fliplr(p);
 
 pream = [po po po po po po po po]; % preambule equivalent a 8 bits
-lenpream=length(pream);
+lenpream = length(pream);
 
 
 
@@ -52,7 +52,7 @@ lenpream=length(pream);
 %codage CRC
 msg = signal_bits'; %reshape(signal_bits,88,1);
 encoded = generate(generator,msg); % colonne
-signal_bits_code = encoded'; % ligne
+signal_bits_code = encoded'; % ligne,contient le CRC 
 
 %ajout preambule 
 
