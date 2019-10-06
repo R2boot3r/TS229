@@ -82,8 +82,9 @@ for u=1:errmax%contient la valeur de la prediction a la case 159,soit en 0 puisq
 end
 [max dtrecu]=max(Coef);%on prend le maximum du tableau,le maxim de l intercorrelation en 0 et on prend l indice de la ligne
 
-
-vl = conv(rl, p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te
+%on extrait les données utiles,on enleve le preambule et le decalage
+%temporel
+vl = conv(rl(length(pream)+dtrecu:length(rl)), p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te
 
 vm = vl(Fse:Fse:Fse*Ns);
 
