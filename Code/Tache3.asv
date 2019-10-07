@@ -38,7 +38,7 @@ p = [-0.5*ones(1,Fse/2) 0.5*ones(1,Fse/2)];
 p_inverse = fliplr(p);
 
 pream = [po po po po po po po po]; % preambule equivalent a 8 bits
-lenpream = length(pream);
+lenpream=length(pream);
 
 
 
@@ -52,7 +52,7 @@ lenpream=length(pream);
 %codage CRC
 msg = signal_bits'; %reshape(signal_bits,88,1);
 encoded = generate(generator,msg); % colonne
-signal_bits_code = encoded'; % ligne,contient le CRC 
+signal_bits_code = encoded'; % ligne
 
 %ajout preambule 
 
@@ -92,12 +92,10 @@ signal_recu=outdata';% information decode
 
 
 if error==0
-    disp("message est integre en l'absence d erreur");
+    disp("message est integre en l absence d erreur");
 else
-    disp("message n'est pas integre en l'absence d'erreur parmis les 112 bits de données ")
+    disp("message n'est pas integre en l absence d erreur parmis les 88 bits de données utile")
 end
     
-%%commentaire prof 
-% quand on detect une erreur on ne sait pas si il y a une erreur sur le crc
-% ou sur le message utile
+
 
