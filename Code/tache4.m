@@ -24,7 +24,7 @@ errmax=100;     %decalage temporel maximale
 %Variables pour le TEB
 
 Eb = 5;%10 % a trouver l'erreur binaire th�orique donner par Yassine
-eb_sur_No_db = 0:1:10; % cr�ation du vecteur qui contient les vecteur espac� de 0.5 pour le trac� de la TEB
+eb_sur_No_db = 1:1:10; % cr�ation du vecteur qui contient les vecteur espac� de 0.5 pour le trac� de la TEB
 eb_sur_no_dc = 10.^(eb_sur_No_db./10);% Calcule du vecteur qui contient les vecteurs espac� en decimale pour la TEB
 sigma = sqrt((1/2)*(1./eb_sur_no_dc)*Eb);%NO/2 % vecteur qui r�pr�sente l'ensemble des sigma a injecter dans la teb
 TEB = zeros(1,size(sigma,2)); % initialisation du vecteur de la teb
@@ -137,7 +137,7 @@ df_teb=randi(2000,1)-1000;
 decaltemp_teb=zeros(1,dt_teb);% decalage temporel
 sl_teb=[decaltemp_teb sl_teb];
 sl2_teb=sl_teb*exp(j*2*pi*df);
-matdecaltemp=[];
+
 
 % pour chanque valeur de sigma nous allons calculer un teb
 for k=1:size(sigma,2) 
@@ -154,7 +154,7 @@ for k=1:size(sigma,2)
                 
                 %module au carré 
                 rl_teb=abs(yl_teb).^2; %afin d eviter de chercher df
-
+                
                 %synchronisation
                 dtrecuteb=0;
                 Rcorr=[];
@@ -173,12 +173,12 @@ for k=1:size(sigma,2)
                 
                 [maxi dtrecuteb]=max(Coef); % on prend le maximum du tableau,le maxim de l intercorrelation en 0 et on prend l indice de la ligne
 
-               matdecaltemp=[matdecaltemp dtrecuteb];
+                
                 
                 
                 %reception du signal
-                vl_teb = conv(rl_teb(length(pream)+dtrecuteb:length(rl_teb)), p_inverse);
-                vm_teb = vl_teb(Fse:Fse:Fse*Ns);      
+                vl_teb= conv(rl_teb, p_inverse);
+                vm_teb = vl_teb(Fse+length(pream)+dtrecuteb:Fse:Fse*Ns);      
 
 
                 %Filtre de d�cision
@@ -215,6 +215,8 @@ figure;
     ylabel('TEB ');
     legend('Pb', 'Teb');
     set(gca,'FontSize',14);
+    grid on;
+    
 
 
 
