@@ -10,7 +10,7 @@
 clc
 clear
 close all
-load('../data/buffers.mat');
+load('../data/adsb_msgs.mat'); %Chargement des données 
 
 % addpath('Client', 'General', 'MAC', 'PHY');
 %% Constants definition
@@ -32,6 +32,7 @@ Fse = floor(Fe/Rb); % Nombre d'echantillons par symboles
 seuil_detection = 0.75; % Seuil pour la detection des trames (entre 0 et 1)
 p = [-0.5*ones(1,Fse/2) 0.5*ones(1,Fse/2)];
 p_inverse = fliplr(p);
+
 %% Affichage d'une entete en console
 fprintf(CHAR_LINE)
 fprintf(DISPLAY_MASK,'     n      ',' t (in s) ','Corr.', 'DF', '  AA  ','FTC','   CS   ','ALT (in ft)','CPRF','LON (in deg)','LAT (in deg)','CRC')

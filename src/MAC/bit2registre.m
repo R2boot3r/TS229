@@ -28,6 +28,11 @@ index_format = [8 12]; %  1 debut, 2 fin
 index_adress = [16 39];
 index_Adsb = [40 95];
 
+% variables pour le CRC
+polynomial = [1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 1 0 0 1]; % polynome generateur
+generator = crc.generator(polynomial); % generateur crc
+detector = crc.detector(polynomial); % detecteur crc
+
 %indice données trame ADS-B
 index_type = [1 5];
                 
@@ -37,8 +42,12 @@ Nb = 17;
 
 
 %% Code de la fonction Principale
-[bitPacket, error_flag] = CRC_decode(bitPacketCRC);
-bitPacket = bitPacket'; % inversion ligne/colone
+%% decodeur crc
+[bitPacket error_flag] = detector.detect(bitPacketCRC'); %detector(signal_recu_code') detect(detector, signal_recu_code')
+bitPacket = bitPacket';% information decodé
+
+% [bitPacket, error_flag] = CRC_decode(bitPacketCRC);
+% bitPacket = bitPacket'; % inversion ligne/colone
 
 if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur les donné
     
