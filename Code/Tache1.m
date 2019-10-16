@@ -77,7 +77,7 @@ end
 nb_erreur=0;
 for i=1:size(signal_recu,2)
                  if (signal_recu(i) ~= signal_bits(i))
-                     nb_erreur = nb_erreur + 1
+                     nb_erreur = nb_erreur + 1;
                  end
 end
 
@@ -133,6 +133,31 @@ if TEB_activation==true
 end
 
 pb = 1/2*erfc(sqrt(eb_sur_no_dc));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%  Figures de résultats  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

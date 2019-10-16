@@ -18,7 +18,7 @@
 
 function registre_ouput = bit2registre(bitPacketCRC,registre_input,refLon,refLat)
 %% Variables
-tableau_char = '_ABCDEFGHIJKLMNOPQRSTUVWXYZ_____ _______________0123456789______';
+tableau_char = '_ABCDEFGHIJKLMNOPQRSTUVWXYZ _______________0123456789__________';
 
 
 % Déclarations des variables/indices local de positions
@@ -56,7 +56,7 @@ if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur le
         
         if registre_input.type >= 1 && registre_input.type <= 4
          
-           char1 = bin2dec(num2str(ADS(9:14))); %% à utiliser reshape
+           char1 = bin2dec(num2str(ADS(9:14))); %% à utiliser creshape
            char2 = bin2dec(num2str(ADS(15:20)));
            char3 = bin2dec(num2str(ADS(21:26)));
            char4 = bin2dec(num2str(ADS(27:32)));
