@@ -180,3 +180,6 @@ end
 
 %commentaire
 %Energie du filtre pas calculer de manière automatique à faire  Eb est définie a la main. 
+%Choix du type de message définie ou aléatoire en début de script mettre
+%variable qui permet de choisir
+% pb depend de la constellation et du nombre de signal

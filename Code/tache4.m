@@ -21,6 +21,11 @@ Ns = 88;      % Nombre de symbole/bits par messages
 Nb = Ns;        % Nombre de bits par messages on a �galit� cas particulier d'une 2 PPM
 errmax=100;     %decalage temporel maximale
 
+
+
+
+
+
 %Variables pour le TEB
 
 Eb = 5;%10 % a trouver l'erreur binaire th�orique donner par Yassine
@@ -62,9 +67,9 @@ end
 
 %canal
 ecart_type = 0;
-dt=randi(errmax,1);
-df=randi(2000,1)-1000;
-decaltemp=zeros(1,dt);% decalage temporel
+dt = randi(errmax,1);
+df = randi(2000,1)-1000;
+decaltemp =zeros(1,dt);% decalage temporel
 sl=[decaltemp sl];
 nl = ecart_type * randn(1, length(sl));
 sl2=sl*exp(j*2*pi*df);
@@ -132,7 +137,7 @@ end
 
 %canal
 
-dt_teb=randi(errmax,1);
+dt_teb = randi(errmax,1);
 df_teb=randi(2000,1)-1000;
 decaltemp_teb=zeros(1,dt_teb);% decalage temporel
 sl_teb=[decaltemp_teb sl_teb];
@@ -157,13 +162,13 @@ for k=1:size(sigma,2)
                 
                 %synchronisation
                 dtrecuteb=0;
-                Rcorr=[];
-                for z=1:errmax
-                Rcorr=[Rcorr;sum(rl_teb(z:z+8*Fse).^2)];
+                Rcorr = [];
+                for z = 1:errmax
+                Rcorr = [Rcorr;sum(rl_teb(z:z+8*Fse).^2)];
                 end
 
                 M=[];
-                for error=1:errmax % formule de la prediction sur des segments de 160 cases,taille de pream
+                for error = 1:errmax % formule de la prediction sur des segments de 160 cases,taille de pream
                     M=[M ;xcorr(pream,rl_teb(error:error+8*Fse),8*Fse-1)./sqrt(Pcorr*Rcorr(error,1))];
                 end
                 Coef=[];
