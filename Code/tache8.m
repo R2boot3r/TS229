@@ -10,6 +10,9 @@
 clc
 clear
 close all
+load('../data/buffers.mat'); %Chargement des données 
+
+addpath('../src/Client', '../src/General', '../src/MAC', '../src/PHY'); % Ajout d'emplacement de certains scripts/fonctions
 load('../data/adsb_msgs.mat'); %Chargement des données 
 
 % addpath('Client', 'General', 'MAC', 'PHY');
@@ -33,10 +36,29 @@ seuil_detection = 0.75; % Seuil pour la detection des trames (entre 0 et 1)
 p = [-0.5*ones(1,Fse/2) 0.5*ones(1,Fse/2)];
 p_inverse = fliplr(p);
 
-%% Affichage d'une entete en console
-fprintf(CHAR_LINE)
-fprintf(DISPLAY_MASK,'     n      ',' t (in s) ','Corr.', 'DF', '  AA  ','FTC','   CS   ','ALT (in ft)','CPRF','LON (in deg)','LAT (in deg)','CRC')
-fprintf(CHAR_LINE)
+polynomial = [1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 1 0 0 1]; % polynome generateur
+generator = crc.generator(polynomial); % generateur crc
+detector = crc.detector(polynomial); % detecteur crc
+
+
+List_Planes = [];
+List_Corrval = ones(1,27); 
+n = 1;
+registre = struct('adresse',[],'format',[],'type',[],'nom',[],'altitude',[],'timeFlag',[],'cprFlag',[],'latitude',[],'longitude',[],'trajectoire',[]);
+tableau_car = struct('A',1,'B',2,'C',3,'D',4,'E',5,'F',6,'G',7,'H',8,'I',9,'J',10,'K',11,'L',12,'M',13,'N',14,'O',15,'P',16,'Q',17,'R',18,'S',19,'T',20,'U',21,'V',22,'W',23,'X',24,'Y',25,'Z',26,'SP',32,"A0",48,'A1',49,'A2',50,'A3',51,'A4',52,'A5',53,'A6',54,'A7',55,'A8',56,'A9',57);
+
+% Variables propre à l'affichage dans la console
+
+DISPLAY_MASK1 = '| %12.12s | %10.10s | %6.6s | %3.3s | %8.8s | %3.3s | %8.8s | %11.11s | %4.4s | %12.12s | %12.12s | %3.3s |\n'; % Format pour l'affichage
+DISPLAY_MASK2 = '| %12.12s |      %1.0f     | %6.6s | %3.0f | %8.8s | %3.0f | %8.8s | %11.0f | %4.0f | %12.9f | %12.9f | %3.3s |\n'; % Format pour l'affichage
+CHAR_LINE =  '+--------------+------------+--------+-----+----------+-----+----------+-------------+------+--------------+--------------+-----+\n'; % Lignes
+
+% Variables de Position de reference de l'antenne
+
+Ref_Lon = -0.606629; %longitute de l'antenne
+Ref_Lat = 44.806884; %latitude de l'antenne
+
+%
 
 %% Boucle principale
 % listOfPlanes = [];
@@ -96,4 +118,16 @@ for k=1:length(vm)
     end
 end
 
+for i = 1:1:size(signal_recu,2)
+    registre = bit2registre(signal_recu,registre,Ref_Lon,Ref_Lat);
 
+    fprintf(DISPLAY_MASK2,'            ', registre.timeFlag   ,'   1   ',registre.format,registre.nom,registre.type,'   CS   ',registre.altitude,registre.cprFlag,registre.longitude,registre.latitude,' 0 ')
+    fprintf(CHAR_LINE)
+    plot(registre.longitude,registre.latitude,'.g','MarkerSize',20);
+
+
+end
+
+%% decodeur crc
+[outdata error] = detector.detect(signal_recu'); %detector(signal_recu_code') detect(detector, signal_recu_code')
+signal_recu=outdata';% information decode
