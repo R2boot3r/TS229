@@ -30,20 +30,20 @@ index_Adsb = [40 95];
 
 % variables pour le CRC
 polynomial = [1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 1 0 0 1]; % polynome generateur
-generator = crc.generator(polynomial); % generateur crc
+generator = crc.generator(polynomial); % generateur crc semble ne servir a rien a enlever
 detector = crc.detector(polynomial); % detecteur crc
 
 %indice données trame ADS-B
 index_type = [1 5];
                 
-%variables
+%variables pour le calcul de la longitude et de la latitude
 Nz = 15;
 Nb = 17;
 
 
 %% Code de la fonction Principale
 %% decodeur crc
-[bitPacket error_flag] = detector.detect(bitPacketCRC'); %detector(signal_recu_code') detect(detector, signal_recu_code')
+[bitPacket, error_flag] = detector.detect(bitPacketCRC'); %detector(signal_recu_code') detect(detector, signal_recu_code')
 bitPacket = bitPacket';% information decodé
 
 % [bitPacket, error_flag] = CRC_decode(bitPacketCRC);
@@ -56,7 +56,7 @@ if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur le
     % Verification qu'on se trouve dans un cas
     if DF == 17
         registre_input.format = DF;
-        registre_input.adresse = bi2de(fliplr(bitPacket((index_adress(1):index_adress(2))-index_pre)));    
+        registre_input.adresse = bi2de(fliplr(bitPacket((index_adress(1):index_adress(2))-index_pre)));  % a convertir en hexa  
         
         ADS = bitPacket((index_Adsb(1):index_Adsb(2))-index_pre); % recupération des données ADS
         
@@ -113,6 +113,9 @@ if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur le
             Dloni = 360/(Nlat - registre_input.cprFlag) * (Nlat>registre_input.cprFlag) + 360 * (Nlat == registre_input.cprFlag);
             m = floor(refLon/Dloni) + floor(1/2 + Mod(refLon,Dloni)/Dloni - LON/2.^Nb);
             registre_input.longitude = Dloni*(m + LON/2.^Nb);
+            
+            % Mise dans le vecteur trajectoire de la longitude/latitude
+            %registre_input.trajectoire = {registre_input.trajectoire; [registre_input.longitude registre_input.latitude]};
         end
     end
 end

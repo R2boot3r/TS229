@@ -77,24 +77,39 @@ yl=sl2+nl;% decalage frequentiel
 
 
 %module au carré 
-rl=abs(yl).^2; %afin d eviter de chercher df
+rl=abs(yl).^2; %afin d eviter de chercher df on "converti" toutes les valeurs complexe
 
 %synchronisation
 Pcorr=sum(pream.^2);
 Rcorr=[];
-for y=1:errmax
-    Rcorr=[Rcorr;sum(rl(y:y+8*Fse).^2)];
-end
+
+% errmax repr�sente le decalage temporelle maximal d'une tram
+% on parcours les donn�e  et on calcule l'�nergie segment par segment,
+% (d�calage de 1 echantillons a chaque fois)
+
+% for y=1:errmax
+%     Rcorr=[Rcorr;sum(rl(y:y+8*Fse).^2)];
+% end
+
+
 
 M=[];
 for g=1:errmax % formule de la prediction sur des segments de 160 cases,taille de pream
-    M=[M ;xcorr(pream,rl(g:g+8*Fse),8*Fse-1)./sqrt(Pcorr*Rcorr(g,1))];
-end
-Coef=[];
-for u=1:errmax % contient la valeur de la prediction a la case 159,soit en 0 puisqu matlab decale tout du coté des positif
+     r = sum(rl(y:y+8*Fse).^2); % a remplacer par g
+    M=[M ;xcorr(pream,rl(g:g+8*Fse),8*Fse-1)./sqrt(Pcorr*r)]; %Rcorr(g,1)
     Coef=[Coef;(M(u,8*Fse-1))];
 end
+
+
+
+% Coef=[];
+% for u=1:errmax % contient la valeur de la prediction a la case 159,soit en 0 puisqu matlab decale tout du coté des positif
+%     Coef=[Coef;(M(u,8*Fse-1))]; % a remplacer par g 
+% end
+
 [maxi dtrecu]=max(Coef); % on prend le maximum du tableau,le maxim de l intercorrelation en 0 et on prend l indice de la ligne
+
+%dtrecu= indice du maximun
 
 % on extrait les données utiles,on enleve le preambule et le decalage temporel
 vl = conv(rl(length(pream)+dtrecu:length(rl)), p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te

@@ -105,9 +105,9 @@ maxi =0.9879;
 
 
 dtrecu =67704;
-vl = conv(rl(length(pream)+dtrecu:length(rl)), p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te
+vl = conv(rl, p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te
 
-vm = vl(Fse:Fse:length(vl));
+vm = vl(Fse+length(pream)+dtrecu:Fse:length(vl));
 % decisison
 signal_recu=[];
 for k=1:length(vm)
@@ -118,15 +118,16 @@ for k=1:length(vm)
     end
 end
 
-for i = 1:1:size(signal_recu,2)
-    registre = bit2registre(signal_recu,registre,Ref_Lon,Ref_Lat);
+
+%for i = 1:1:size(signal_recu,2)
+    registre = bit2registre(signal_recu(1:112),registre,Ref_Lon,Ref_Lat);
 
     fprintf(DISPLAY_MASK2,'            ', registre.timeFlag   ,'   1   ',registre.format,registre.nom,registre.type,'   CS   ',registre.altitude,registre.cprFlag,registre.longitude,registre.latitude,' 0 ')
     fprintf(CHAR_LINE)
     plot(registre.longitude,registre.latitude,'.g','MarkerSize',20);
 
 
-end
+%end
 
 %% decodeur crc
 [outdata error] = detector.detect(signal_recu'); %detector(signal_recu_code') detect(detector, signal_recu_code')

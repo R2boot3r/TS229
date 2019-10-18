@@ -18,7 +18,7 @@ List_Planes = [];
 List_Corrval = ones(1,27); 
 n = 1;
 registre = struct('adresse',[],'format',[],'type',[],'nom',[],'altitude',[],'timeFlag',[],'cprFlag',[],'latitude',[],'longitude',[],'trajectoire',[]);
-tableau_car = struct('A',1,'B',2,'C',3,'D',4,'E',5,'F',6,'G',7,'H',8,'I',9,'J',10,'K',11,'L',12,'M',13,'N',14,'O',15,'P',16,'Q',17,'R',18,'S',19,'T',20,'U',21,'V',22,'W',23,'X',24,'Y',25,'Z',26,'SP',32,"A0",48,'A1',49,'A2',50,'A3',51,'A4',52,'A5',53,'A6',54,'A7',55,'A8',56,'A9',57);
+
 
 % Variables propre à l'affichage dans la console
 

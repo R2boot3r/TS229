@@ -6,7 +6,7 @@
 clear ;close all ; clc
 
 
-addpath('../PHY');
+addpath('../src/PHY');
 
 %% 
 Fe = 20e6; % Frequence d'echantillonnage (imposee par le serveur)
@@ -14,24 +14,23 @@ Fs = 1e6;
 Ts = 1/Fs;
 Rb = 1e6;% Debit binaire (=debit symbole)
 Fse = floor(Fe/Rb); % Nombre d'echantillons par symboles
-Nfft = 256;
+Nfft = 256; %% ne marche pas pour 2048 et plus  voir pk ?
 Nb = 1e4; % Nombre de bits générés
 
 
-%% Chaîne TX
+%% Script
+
+%__________chaine__________
+
 b = randi([0,1],1,Nb);
 sl = modulatePPM(b,Fse);
 
-[X,freq_ax] = Mon_Welch1(sl, Nfft, Fe);
 
+%_________Application de Mon_Welch__________
 
-% On a juste un offset voir a quoi il est du
+[X,freq_ax] = Mon_Welch(sl, Nfft, Fe);
 
-
-%% Resultats
-
-
-% Calcule de la DSP théorique
+%_________Calcule de la DSP théorique_________
 
 Dsp0 = 0.25 * double(freq_ax==0); % ajout du ==0 pour la continuité car la fonction a un problème de continuité en 0
 
@@ -48,12 +47,12 @@ dspTh = abs(Dsp+ Dsp0).^2;
 %#passer la frequence d'echantillon
 %# il retour l'axe fréquentiel
 %# axe frequentiel on peux le calculer sépar
+
 figure,
-semilogy(f,X)
+semilogy(freq_ax,X);
 hold on
 semilogy(freq_ax,dspTh);
-[X1, f1] = Mon_Welch(sl, Nfft, Fe);
-semilogy(f1,X1)
+
 
 %%
 %%%% Commentaire
