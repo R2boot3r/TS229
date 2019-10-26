@@ -1,7 +1,0 @@
-function [bitPacket, error_flag] = CRC_decode(bit_packet)
-    polynomial = [1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 1 0 0 1]; % polynome generateur
-    generator = crc.generator(polynomial); % generateur crc
-    detector = crc.detector(polynomial); % detecteur crc
-    [bitPacket, error_flag] = CRC_decode_(bit_packet);
-end
-
