@@ -4,9 +4,7 @@
 %__________Alexandra Abulaeva & Julien Choveton-Caillat_______%
 
 clear ;close all ; clc
-
-
-
+addpath('../src/Client', '../src/General', '../src/MAC', '../src/PHY'); % Ajout d'emplacement de certains scripts/fonctions
 
 %%%%%%%%%%%%%%%%%%%  Initialisation des variables  %%%%%%%%%%%%%%%%%%%%
 %Variables général
@@ -21,9 +19,7 @@ Ns = 88;      % Nombre de symbole/bits par messages
 Nb = Ns;        % Nombre de bits par messages on a �galit� cas particulier d'une 2 PPM
 Npolynome = 24;% taille du polynome generateur
 tailletotale = Nb+Npolynome; % taille totale de la trame
-polynomial = [1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 1 0 0 1]; % polynome generateur
-generator = crc.generator(polynomial); % generateur crc
-detector = crc.detector(polynomial); % detecteur crc
+
 
 
 
@@ -51,7 +47,7 @@ lenpream=length(pream);
 
 %codage CRC
 msg = signal_bits'; %reshape(signal_bits,88,1);
-encoded = generate(generator,msg); % colonne
+encoded = CRC_encode(msg); % colonne
 signal_bits_code = encoded'; % ligne,contient le CRC 
 
 %ajout preambule 
@@ -86,8 +82,8 @@ end
 
 
 %% decodeur crc
-[outdata error] = detector.detect(signal_recu_code'); %detector(signal_recu_code') detect(detector, signal_recu_code')
-signal_recu=outdata';% information decode
+[outdata error] = CRC_decode(signal_recu_code'); %detector(signal_recu_code') detect(detector, signal_recu_code')
+signal_recu=outdata';% information decode en ligne
 
 
 
