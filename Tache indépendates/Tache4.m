@@ -80,41 +80,15 @@ yl=sl2+nl;% decalage frequentiel
 rl=abs(yl).^2; %afin d eviter de chercher df on "converti" toutes les valeurs complexe
 
 %synchronisation
-Pcorr=sum(pream.^2);
-Rcorr=[];
 
-% errmax repr�sente le decalage temporelle maximal d'une tram
-% on parcours les donn�e  et on calcule l'�nergie segment par segment,
-% (d�calage de 1 echantillons a chaque fois)
-
-% for y=1:errmax
-%     Rcorr=[Rcorr;sum(rl(y:y+8*Fse).^2)];
-% end
-
-
-
-M=[];
-for g=1:errmax % formule de la prediction sur des segments de 160 cases,taille de pream
-     r = sum(rl(y:y+8*Fse).^2); % a remplacer par g
-    M=[M ;xcorr(pream,rl(g:g+8*Fse),8*Fse-1)./sqrt(Pcorr*r)]; %Rcorr(g,1)
-    Coef=[Coef;(M(u,8*Fse-1))];
-end
-
-
-
-% Coef=[];
-% for u=1:errmax % contient la valeur de la prediction a la case 159,soit en 0 puisqu matlab decale tout du coté des positif
-%     Coef=[Coef;(M(u,8*Fse-1))]; % a remplacer par g 
-% end
-
-[maxi dtrecu]=max(Coef); % on prend le maximum du tableau,le maxim de l intercorrelation en 0 et on prend l indice de la ligne
+[maxi dtrecu]=synchro(rl,errmax,pream,Fse); % on prend le maximum du tableau,le maxim de l intercorrelation en 0 et on prend l indice de la ligne
 
 %dtrecu= indice du maximun
 
 % on extrait les données utiles,on enleve le preambule et le decalage temporel
-vl = conv(rl(length(pream)+dtrecu:length(rl)), p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te
+vl = conv(rl, p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te
 
-vm = vl(Fse:Fse:Ns*Fse);
+vm = vl(length(pream)+dtrecu+Fse:Fse:Ns*Fse);
 % decisison
 signal_recu=[];
 for k=1:length(vm)
@@ -129,6 +103,7 @@ nb_erreur = 0;
 for l=1:length(signal_recu)
     if (signal_recu(l) ~= signal_bits(l))
         nb_erreur = nb_erreur + 1;
+        
     end
 end
 
@@ -176,29 +151,13 @@ for k=1:size(sigma,2)
                 rl_teb=abs(yl_teb).^2; %afin d eviter de chercher df
                 
                 %synchronisation
-                dtrecuteb=0;
-                Rcorr = [];
-                for z = 1:errmax
-                Rcorr = [Rcorr;sum(rl_teb(z:z+8*Fse).^2)];
-                end
 
-                M=[];
-                for error = 1:errmax % formule de la prediction sur des segments de 160 cases,taille de pream
-                    M=[M ;xcorr(pream,rl_teb(error:error+8*Fse),8*Fse-1)./sqrt(Pcorr*Rcorr(error,1))];
-                end
-                Coef=[];
-                for uteb=1:errmax % contient la valeur de la prediction a la case 159,soit en 0 puisqu matlab decale tout du coté des positif
-                    Coef=[Coef;(M(uteb,8*Fse-1))];
-                end
-                
-                [maxi dtrecuteb]=max(Coef); % on prend le maximum du tableau,le maxim de l intercorrelation en 0 et on prend l indice de la ligne
+                [maxi dtrecuteb]=synchro(rl_teb,errmax,pream,Fse); % on prend le maximum du tableau,le maxim de l intercorrelation en 0 et on prend l indice de la ligne
 
-                
-                
-                
+              
                 %reception du signal
-                vl_teb= conv(rl_teb, p_inverse);
-                vm_teb = vl_teb(Fse+length(pream)+dtrecuteb:Fse:Fse*Ns);      
+                vl_teb= conv(rl_teb(length(pream)+dtrecuteb:end), p_inverse);
+                vm_teb = vl_teb(Fse:Fse:Fse*Ns);      
 
 
                 %Filtre de d�cision

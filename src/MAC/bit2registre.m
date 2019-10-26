@@ -21,19 +21,16 @@ function registre_ouput = bit2registre(bitPacketCRC,registre_input,refLon,refLat
 tableau_char = '_ABCDEFGHIJKLMNOPQRSTUVWXYZ_____ _______________0123456789______';
 
 
-% Déclarations des variables/indices local de positions
+% Dï¿½clarations des variables/indices local de positions
 %indice trame ADS-B
-index_pre = 7; %Attention bitPacket ne contient pas le préambule il faut donc décaler toutes les valeurs suivantes de 7
+index_pre = 7; %Attention bitPacket ne contient pas le prï¿½ambule il faut donc dï¿½caler toutes les valeurs suivantes de 7
 index_format = [8 12]; %  1 debut, 2 fin
 index_adress = [16 39];
 index_Adsb = [40 95];
 
-% variables pour le CRC
-polynomial = [1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 1 0 0 1]; % polynome generateur
-generator = crc.generator(polynomial); % generateur crc semble ne servir a rien a enlever
-detector = crc.detector(polynomial); % detecteur crc
 
-%indice données trame ADS-B
+
+%indice donnï¿½es trame ADS-B
 index_type = [1 5];
                 
 %variables pour le calcul de la longitude et de la latitude
@@ -43,13 +40,13 @@ Nb = 17;
 
 %% Code de la fonction Principale
 %% decodeur crc
-[bitPacket, error_flag] = detector.detect(bitPacketCRC'); %detector(signal_recu_code') detect(detector, signal_recu_code')
-bitPacket = bitPacket';% information decodé
+[bitPacket, error_flag] = CRC_decode(bitPacketCRC'); %detector(signal_recu_code') detect(detector, signal_recu_code')
+bitPacket = bitPacket';% information decodï¿½
 
 % [bitPacket, error_flag] = CRC_decode(bitPacketCRC);
 % bitPacket = bitPacket'; % inversion ligne/colone
 
-if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur les donné
+if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur les donnï¿½
     
     DF = bi2de(fliplr(bitPacket((index_format(1):index_format(2))-index_pre)));
 
@@ -58,14 +55,14 @@ if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur le
         registre_input.format = DF;
         registre_input.adresse = bi2de(fliplr(bitPacket((index_adress(1):index_adress(2))-index_pre)));  % a convertir en hexa  
         
-        ADS = bitPacket((index_Adsb(1):index_Adsb(2))-index_pre); % recupération des données ADS
+        ADS = bitPacket((index_Adsb(1):index_Adsb(2))-index_pre); % recupï¿½ration des donnï¿½es ADS
         
         registre_input.type = bi2de(fliplr(ADS(index_type(1):index_type(2))));
         
         
         if registre_input.type >= 1 && registre_input.type <= 4
          
-           char1 = bin2dec(num2str(ADS(9:14))); %% à utiliser reshape
+           char1 = bin2dec(num2str(ADS(9:14))); %% ï¿½ utiliser reshape
            char2 = bin2dec(num2str(ADS(15:20)));
            char3 = bin2dec(num2str(ADS(21:26)));
            char4 = bin2dec(num2str(ADS(27:32)));
@@ -132,4 +129,4 @@ end
 
 %% Comentaire
 %il faut prendre a structure concatener en interne et renvoyer la struture
-%complété on écrase a chaque fois l'ancienne structure
+%complï¿½tï¿½ on ï¿½crase a chaque fois l'ancienne structure
