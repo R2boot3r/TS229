@@ -33,25 +33,26 @@ p1 = [ones(1,Fse/2) zeros(1,Fse/2)];
 p = [-0.5*ones(1,Fse/2) 0.5*ones(1,Fse/2)];
 p_inverse = fliplr(p);
 
-pream = [po po po po po po po po]; % preambule equivalent a 8 bits
+% preambule equivalent a 8 bits
+
+pream = [po po po po po po po po]; 
 lenpream = length(pream);
 
 
+% generation du signal
 
+signal_bits = randi(2,1,Ns)-1; 
 
-
-
-
-signal_bits = randi(2,1,Ns)-1; % génération du sipream = [po po po po po po po po]; % preambule equivalent a 8 bits
-lenpream=length(pream);
 
 %codage CRC
+
 msg = signal_bits'; %reshape(signal_bits,88,1);
 encoded = CRC_encode(msg); % colonne
 signal_bits_code = encoded'; % ligne,contient le CRC 
 
 
 % modulation
+
 sl=modulatePPM(signal_bits_code,Fse);
 
 % preambule
@@ -59,6 +60,7 @@ sl=modulatePPM(signal_bits_code,Fse);
 sl=[pream sl];
 
 % canal
+
 ecart_type = 0;
 nl = ecart_type * randn(1, length(sl));
 yl= sl+nl;
@@ -68,12 +70,10 @@ yl= sl+nl;
 signal_recu_code = demodulatePPM(yl,Fse,length(pream),0);
 
 
+% decodeur crc
 
-%% decodeur crc
 [outdata error] = CRC_decode(signal_recu_code'); %detector(signal_recu_code') detect(detector, signal_recu_code')
 signal_recu=outdata';% information decode en ligne
-
-
 
 if error==0
     disp("message est integre en l'absence d erreur");

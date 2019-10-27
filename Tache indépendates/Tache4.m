@@ -22,10 +22,6 @@ Nb = Ns;        % Nombre de bits par messages on a �galit� cas particulier d
 errmax=100;     %decalage temporel maximale
 
 
-
-
-
-
 %Variables pour le TEB
 
 Eb = 5;%10 % a trouver l'erreur binaire th�orique donner par Yassine
@@ -44,18 +40,19 @@ p1 = [ones(1,Fse/2) zeros(1,Fse/2)];
 %impulsion p(t) filtre de reception
 p = [-0.5*ones(1,Fse/2) 0.5*ones(1,Fse/2)];
 p_inverse = fliplr(p);
-
-
-
-
-signal_bits = randi(2,1,Ns)-1; % génération du signal a envoyé
-
-
-
-%ajout preambule 
+% preambule 
 zero=zeros(1,Fse);
 pream=[p1 p1 zero po po zero zero zero];
+% decalage temporel et frequentiel
+dt = randi(errmax,1);
+df = randi(2000,1)-1000;
+decaltemp =zeros(1,dt);
 
+
+
+% génération du signal a envoyé
+
+signal_bits = randi(2,1,Ns)-1; 
 
 % modulation
 sl=modulatePPM(signal_bits,Fse);
@@ -66,9 +63,7 @@ sl=[pream sl];
 
 %canal
 ecart_type = 0;
-dt = randi(errmax,1);
-df = randi(2000,1)-1000;
-decaltemp =zeros(1,dt);% decalage temporel
+
 sl=[decaltemp sl];
 nl = ecart_type * randn(1, length(sl));
 sl2=sl*exp(j*2*pi*df);
@@ -82,7 +77,6 @@ rl=abs(yl).^2; %afin d eviter de chercher df on "converti" toutes les valeurs co
 
 [maxi dtrecu]=synchro(rl,errmax,pream,Fse); % on prend le maximum du tableau,le maxim de l intercorrelation en 0 et on prend l indice de la ligne
 
-%dtrecu= indice du maximun
 
 % demodulation
 signal_recu=demodulatePPM(rl,Fse,length(pream),dtrecu);
@@ -108,15 +102,15 @@ sl=modulatePPM(signal_bits_teb,Fse);
 sl_teb=[pream sl];
 
 
-%canal
 
+% decalage temporel et frequentiel
 dt_teb = randi(errmax,1);
 df_teb=randi(2000,1)-1000;
-decaltemp_teb=zeros(1,dt_teb);% decalage temporel
+decaltemp_teb=zeros(1,dt_teb);
 sl_teb=[decaltemp_teb sl_teb];
 sl2_teb=sl_teb*exp(j*2*pi*df);
 
-
+%canal
 % pour chanque valeur de sigma nous allons calculer un teb
 for k=1:size(sigma,2) 
     
@@ -137,8 +131,6 @@ for k=1:size(sigma,2)
 
                 [maxi dtrecuteb]=synchro(rl_teb,errmax,pream,Fse); % on prend le maximum du tableau,le maxim de l intercorrelation en 0 et on prend l indice de la ligne
 
-              
-                %reception du signal
                 % demodulation
                 signal_recu_teb=demodulatePPM(rl_teb,Fse,length(pream),dtrecuteb);  
 
