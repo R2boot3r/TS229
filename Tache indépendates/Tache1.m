@@ -54,13 +54,13 @@ p_inverse = fliplr(p);
 %%
 %%%%%%%%%%%%%%%%%%%%%%%% Canal %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%________________Génération du signal à envoyé_________________
+%________________Gï¿½nï¿½ration du signal ï¿½ envoyï¿½_________________
 signal_bits = randi(2,1,Ns)-1;                     % gÃ©nÃ©ration du signal a envoyÃ©
 %signal_bits = [1 0 0 1 0];
 
 
 %_________________ Association Bits/symboles___________________
-sl=[];                           % cette partie du code et réimplémenté dans modulateppm
+sl=[];                           % cette partie du code et rï¿½implï¿½mentï¿½ dans modulateppm
 for i=1:length(signal_bits)
     if signal_bits(i) == 0       
         sl=[sl po];       
@@ -70,7 +70,7 @@ for i=1:length(signal_bits)
 end
 
 
-% ________________ Création et ajout du bruit__________________
+% ________________ Crï¿½ation et ajout du bruit__________________
 
 nl = ecart_type * randn(1, length(sl));
 yl=sl+nl;
@@ -110,7 +110,7 @@ tic
 if TEB_activation == true
      signal_bits_teb = randi(2,1,Ns)-1; 
          
-     sl = modulatePPM(signal_bits_teb, Fse); % Association Bits/symboles__
+     sl = modulatePPM(signal_bits_teb,Fse); % Association Bits/symboles__
      % gÃ©nÃ©ration du signal a envoyÃ©
      
      for k=1:size(sigma,2) % pour chanque valeur de sigma nous allons calculer un teb
@@ -126,7 +126,7 @@ if TEB_activation == true
                 nl = sigma(k) * randn(1, length(sl));
                 
                 % demodulation et calcul du nombre d'erreurs
-                signal_recu_teb = demodulatePPM(yl,Fse);
+                signal_recu_teb = demodulatePPM(yl,Fse,0,1);
                 nb_erreur = sum(ne(signal_recu_teb,signal_bits_teb));
                  
                  %nb_erreur = 0;
@@ -145,7 +145,7 @@ if TEB_activation == true
      end
 end
 
-pb = 1/2*erfc(sqrt(eb_sur_no_dc));  % probabilité d'erreur théorique
+pb = 1/2*erfc(sqrt(eb_sur_no_dc));  % probabilitï¿½ d'erreur thï¿½orique
 
 toc
 %%
@@ -193,7 +193,7 @@ end
 
 
 %commentaire
-%Energie du filtre pas calculer de manière automatique à faire  Eb est définie a la main. 
-%Choix du type de message définie ou aléatoire en début de script mettre
+%Energie du filtre pas calculer de maniï¿½re automatique ï¿½ faire  Eb est dï¿½finie a la main. 
+%Choix du type de message dï¿½finie ou alï¿½atoire en dï¿½but de script mettre
 %variable qui permet de choisir
 % pb depend de la constellation et du nombre de signal

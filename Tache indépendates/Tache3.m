@@ -50,35 +50,23 @@ msg = signal_bits'; %reshape(signal_bits,88,1);
 encoded = CRC_encode(msg); % colonne
 signal_bits_code = encoded'; % ligne,contient le CRC 
 
-%ajout preambule 
 
+% modulation
+sl=modulatePPM(signal_bits_code,Fse);
 
-sl = pream;
-for i= lenpream+1:length(signal_bits_code)+lenpream% ajout preambule et modulation uniquement pour l information utile
-    if signal_bits_code(i-lenpream) == 0       
-        sl=[sl po];       
-    else    
-        sl=[sl p1];
-    end
-end
+% preambule
 
-ecart_type = 1;
+sl=[pream sl];
+
+% canal
+ecart_type = 0;
 nl = ecart_type * randn(1, length(sl));
-
 yl= sl+nl;
-yl= yl(length(pream):1:length(yl)); % on traite uniquement l information utile
-rl = conv(yl, p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te
 
-rm = rl(Fse:Fse:Fse*(tailletotale));% taille crc
+% demodulation
 
-signal_recu_code=[];
-for k=1:length(rm)
-    if(rm(k)<0)
-        signal_recu_code(k)=1;
-    else
-        signal_recu_code(k)=0;
-    end
-end
+signal_recu_code = demodulatePPM(yl,Fse,length(pream),0);
+
 
 
 %% decodeur crc

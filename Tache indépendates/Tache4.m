@@ -56,14 +56,13 @@ signal_bits = randi(2,1,Ns)-1; % génération du signal a envoyé
 zero=zeros(1,Fse);
 pream=[p1 p1 zero po po zero zero zero];
 
-sl=pream;
-for i=length(pream)+1:length(signal_bits)+length(pream)%ajout preambule et modulation 
-    if signal_bits(i-length(pream)) == 0       
-        sl=[sl po];       
-    else    
-        sl=[sl p1];
-    end
-end
+
+% modulation
+sl=modulatePPM(signal_bits,Fse);
+
+% preambule
+
+sl=[pream sl];
 
 %canal
 ecart_type = 0;
@@ -85,19 +84,9 @@ rl=abs(yl).^2; %afin d eviter de chercher df on "converti" toutes les valeurs co
 
 %dtrecu= indice du maximun
 
-% on extrait les données utiles,on enleve le preambule et le decalage temporel
-vl = conv(rl, p_inverse); % pour mettre le signal dans la même base il y a deux période car l'un est échantilloné a Ts et l'autre a Te
+% demodulation
+signal_recu=demodulatePPM(rl,Fse,length(pream),dtrecu);
 
-vm = vl(length(pream)+dtrecu+Fse:Fse:Ns*Fse);
-% decisison
-signal_recu=[];
-for k=1:length(vm)
-    if(vm(k)<0)
-        signal_recu(k)=1;
-    else
-        signal_recu(k)=0;
-    end
-end
 
 nb_erreur = 0;
 for l=1:length(signal_recu)
@@ -111,19 +100,13 @@ end
 
 signal_bits_teb = randi(2,1,Ns)-1; % génération du signal a envoyé
 
+% modulation
+sl=modulatePPM(signal_bits_teb,Fse);
 
+% preambule
 
-%ajout preambule
+sl_teb=[pream sl];
 
-sl_teb=pream;
-
-for i=length(pream)+1:length(signal_bits_teb)+length(pream)%ajout preambule et modulation 
-    if signal_bits_teb(i-length(pream)) == 0       
-        sl_teb=[sl_teb po];       
-    else    
-        sl_teb=[sl_teb p1];
-    end
-end
 
 %canal
 
@@ -156,23 +139,12 @@ for k=1:size(sigma,2)
 
               
                 %reception du signal
-                vl_teb= conv(rl_teb(length(pream)+dtrecuteb:end), p_inverse);
-                vm_teb = vl_teb(Fse:Fse:Fse*Ns);      
-
-
-                %Filtre de d�cision
-                signal_recu_teb=[];
-                for suite=1:length(vm_teb)
-                    if(vm_teb(suite)<0)
-                        signal_recu_teb(suite)=1;
-                    else
-                        signal_recu_teb(suite)=0;
-                    end
-                end
+                % demodulation
+                signal_recu_teb=demodulatePPM(rl_teb,Fse,length(pream),dtrecuteb);  
 
                  nb_erreur = 0;
-                 for lteb=1:size(signal_recu_teb,2)
-                     if (signal_recu_teb(lteb) ~= signal_bits_teb(lteb))
+                 for lte=1:Ns
+                     if (signal_recu_teb(lte) ~= signal_bits_teb(lte))
                          nb_erreur = nb_erreur + 1;
                      end
                  end
