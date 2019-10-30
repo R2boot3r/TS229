@@ -21,6 +21,9 @@ classdef Avion < handle
         handleTextPlane = [],
         handleTrajectoryPlane = [];
         handleLogo = [];
+        
+        color = [];
+        style = [];
     end
     
     methods
@@ -30,8 +33,8 @@ classdef Avion < handle
             switch nargin-1
                 case 0
                     %% Cas Avion(nom)
-                    % Dans ce cas l'avion est créé au sol sur l'aéroport de
-                    % Mérignac
+                    % Dans ce cas l'avion est crï¿½ï¿½ au sol sur l'aï¿½roport de
+                    % Mï¿½rignac
                     obj.longitude = [];
                     obj.latitude = [];
                     obj.altitude = [];
@@ -40,8 +43,8 @@ classdef Avion < handle
                     
                 case 2
                     %% Cas Avion(nom,lon,lat)
-                    % Dans ce cas l'avion est créé au sol avec les
-                    % coordonnées fournies
+                    % Dans ce cas l'avion est crï¿½ï¿½ au sol avec les
+                    % coordonnï¿½es fournies
                     obj.longitude = varargin{1};
                     obj.latitude = varargin{2};
                     obj.altitude = [];
@@ -49,8 +52,8 @@ classdef Avion < handle
                     
                 case 3
                     %% Cas Avion(nom,lon,lat,alt)
-                    % Dans ce cas l'avion est créé au sol avec les
-                    % coordonnées fournies
+                    % Dans ce cas l'avion est crï¿½ï¿½ au sol avec les
+                    % coordonnï¿½es fournies
                     obj.longitude = varargin{1};
                     obj.latitude = varargin{2};
                     obj.altitude = varargin{3};
@@ -58,8 +61,8 @@ classdef Avion < handle
                     
                 case 4
                     %% Cas Avion(nom,lon,lat,alt,adresse)
-                    % Dans ce cas l'avion est créé au sol avec les
-                    % coordonnées fournies
+                    % Dans ce cas l'avion est crï¿½ï¿½ au sol avec les
+                    % coordonnï¿½es fournies
                     obj.longitude = varargin{1};
                     obj.latitude = varargin{2};
                     obj.altitude = varargin{3};
@@ -78,6 +81,14 @@ classdef Avion < handle
             obj.handleTextPlane = [];
             obj.handleTrajectoryPlane = [];
             obj.handleLogo = [];
+        end
+        
+        function setStyle(obj, idx)
+            STYLES = {'-','--',':'};
+            COLORS = lines(6);
+            
+            obj.color = COLORS(mod(idx-1,size(COLORS,1))+1,:);
+            obj.style = STYLES{mod(floor((idx-1)/size(COLORS,1)),length(STYLES))+1};
         end
         function setPosition(obj,lon,lat,alt)
             if nargin < 2
@@ -127,32 +138,57 @@ classdef Avion < handle
             obj.adresse = adresse;
         end
         
-        function varargout = plot(obj,varargin)
-            varargout{1} = [];
-            varargout{2} = [];
-            varargout{3} = [];
+        function plot(obj)
+            if ~isempty(obj.handleTextPlane)
+                delete(obj.handleFigurePlane)
+                delete(obj.handleTextPlane)
+                delete(obj.handleLogo)
+            end
+            
             if ~isempty([obj.longitude,obj.latitude])
                 if isempty(obj.nom)
                     etiquette = obj.adresse;
                 else
                     etiquette = obj.nom;
                 end
-                obj.handleFigurePlane = plot(obj.longitude,obj.latitude,varargin{:});
-                c = get(obj.handleFigurePlane,'Color');
+                obj.handleFigurePlane = plot(obj.longitude,obj.latitude, '>','color',obj.color);
+                
                 if obj.displayText
-                    obj.handleTextPlane = text(obj.longitude,obj.latitude,etiquette,'color',c,'Margin',3,'HorizontalAlignment','center','VerticalAlignment','bottom','FontSize',12);
+                    obj.handleTextPlane = text(obj.longitude,obj.latitude,etiquette,'color',obj.color,'Margin',3,'HorizontalAlignment','center','VerticalAlignment','bottom','FontSize',12);
                 end
                 if obj.displayTrajectory
-                    
-                    obj.handleTrajectoryPlane = plot(obj.trajectoire(1,:),obj.trajectoire(2,:),'--','color',c);
-                    
+                    obj.handleTrajectoryPlane = plot(obj.trajectoire(1,:),obj.trajectoire(2,:),obj.style,'color',obj.color);
                 end
                 
-                if nargout == 3
-                    varargout{1} = obj.handleFigurePlane;
-                    varargout{2} = obj.handleTextPlane;
-                    varargout{3} = obj.handleTrajectoryPlane;
+                if obj.displayLogo
+                    fileName = 'avion.png';
+                    [marker,~,transperancy] = imread(fileName);
+                    bias = -45;
+                    markersize = [.1,.05];
+                    x = obj.trajectoire(1,:);
+                    y = obj.trajectoire(2,:);
+                    x_low = x - markersize(1)/2;
+                    x_high = x + markersize(1)/2;
+                    y_low = y - markersize(2)/2;
+                    y_high = y + markersize(2)/2;
+                    k = length(obj.trajectoire(1,:));
+                    if k>1 && (x(k)-x(k-1) ~= 0)
+                        angle = -atan((y(k)-y(k-1))/(x(k)-x(k-1)))*180/pi;
+                        if x(k) < x(k-1)
+                            angle = angle + 180;
+                        end
+                    else
+                        angle = 0;
+                    end
+                    angle = angle+bias;
+                    marker_rot = imrotate(marker, angle, 'crop');
+                    transperancy_rot = imrotate(transperancy, angle, 'crop');
+                    
+                    figure(1)
+                    obj.handleLogo = imagesc([x_low(k) x_high(k)], [y_low(k) y_high(k)], marker_rot);
+                    set(obj.handleLogo ,'AlphaData',transperancy_rot);
                 end
+                
             end
         end
         
