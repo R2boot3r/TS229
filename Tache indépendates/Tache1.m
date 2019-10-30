@@ -1,4 +1,4 @@
-%__________________________________________________________________%
+ %__________________________________________________________________%
 %_______________Projet de Communication Numérique ________________%
 %__________________________________________________________________%
 %____________Alexandra Abulaeva & Julien Choveton-Caillat__________%
@@ -122,11 +122,12 @@ if TEB_activation == true
                 
                 %g�n�ration du bruit du signal
                 
-                yl=sl+nl;
                 nl = sigma(k) * randn(1, length(sl));
+                yl=sl+nl;
+                
                 
                 % demodulation et calcul du nombre d'erreurs
-                signal_recu_teb = demodulatePPM(yl,Fse,0,1);
+                [signal_recu_teb] = demodulatePPM(yl,Fse,0,1);
                 nb_erreur = sum(ne(signal_recu_teb,signal_bits_teb));
                  
                  %nb_erreur = 0;

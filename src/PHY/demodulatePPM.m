@@ -1,4 +1,4 @@
-function signal_recu = demodulatePPM(packet,Fse,lengthpream,offset)
+function [signal_recu] = demodulatePPM(packet,Fse,lengthpream,offset)
     
 
 
@@ -15,20 +15,15 @@ rm = rl(Fse:Fse:end);                           % a vori ce que cela fait je me 
 
 %_________________ Filtre de decision_________________________
 
-% signal_recu = (rm >= 0); %Impl�mentation de la decision de mani�re vectoriel
-signal_recu = [];
-for k=1:length(rm)
-    if(rm(k)<0)
-        signal_recu(k)=1;
-    else
-        signal_recu(k)=0;
-    end
-end
-
-
-
-
-
+signal_recu = (rm < 0); %Impl�mentation de la decision de mani�re vectoriel
+% signal_recu = [];
+% for k=1:length(rm)
+%     if(rm(k)<0)
+%         signal_recu(k)=1;
+%     else
+%         signal_recu(k)=0;
+%     end
+% end
 
 
 

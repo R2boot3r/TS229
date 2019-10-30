@@ -16,10 +16,10 @@
 
 %addpath('../PHY'); % Ajout d'emplacement de certains scripts/fonctions
 
-function registre_ouput = bit2registre1(bitPacketCRC,refLon,refLat)
+function registre_ouput = bit2registre(bitPacketCRC,registre_input,refLon,refLat)
 %% Variables
 tableau_char = '_ABCDEFGHIJKLMNOPQRSTUVWXYZ_____ _______________0123456789______';
-registre_input = struct('adresse',[],'format',[],'type',[],'nom',[],'altitude',[],'timeFlag',[],'cprFlag',[],'latitude',[],'longitude',[],'trajectoire',[]);
+registre = struct('adresse',[],'format',[],'type',[],'nom',[],'altitude',[],'timeFlag',[],'cprFlag',[],'latitude',[],'longitude',[],'trajectoire',[]);
 
 
 % D�clarations des variables/indices local de positions
