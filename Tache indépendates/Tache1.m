@@ -17,12 +17,12 @@ Affichage_courbe = true;
 %Variables général
 
 M = 2;                                      % Nombre de symboles
-Fe = 2*1e7;                                 % fréquence d'échantillonage
+Fe = 4e6;                                 % fréquence d'échantillonage
 Te = 1/Fe;                                  % Période d'échantillonage
 Ts = 1e-6;                                  % Temps Symbole
 Ds = 1/Ts;                                  % Debit symbole
 Fse = Ts*Fe;                                % Facteur de sur-échantillonnage
-Ns = 1000;                                  % Nombre de symbole/bits par messages
+Ns = 112;                                  % Nombre de symbole/bits par messages
 Nb = Ns;                                    % Nombre de bits par messages on a �galit� cas particulier d'une 2 PPM
 ecart_type = 0;
 compteur_erreur = 0;

@@ -1,3 +1,5 @@
+clear ;close all ; clc
+
 load('data/adsb_msgs.mat'); %Chargement des donn�es 
 
 addpath('src/Client', 'src/General', 'src/MAC', 'src/PHY'); % Ajout d'emplacement de certains scripts/fonctions
@@ -26,21 +28,24 @@ A = [1 0 1 0 pream adsb_msgs(:,1)' 0 1 0 1 pream adsb_msgs(:,2)'];
 
 a=length(A);
 curs=1;
-list_new_registre = {};
-registre = struct('adresse',[],'format',[],'type',[],'nom',[],'altitude',[],'timeFlag',[],'cprFlag',[],'latitude',[],'longitude',[],'trajectoire',[]);
 
+registre1 = struct('adresse',[],'format',[],'type',[],'nom',[],'altitude',[],'timeFlag',[],'cprFlag',[],'latitude',[],'longitude',[],'trajectoire',[]);
+list ={}
 compteur = 0;
 p=1;
 while curs< a-length(pream)-1
    
-    [maxi, dt]=synchro(A(curs:end),1,pream,Fse);
+    [maxi, dt]=synchro(A(curs:curs+32),1,pream,Fse);
     if maxi>seuil_detection
        dt
        curs
-       list_new_registre = [list_new_registre   bit2registre(A(curs+length(pream):curs+length(pream)+111),registre1,Ref_Lon,Ref_Lat)];
-       compteur = compteur =
-    end
-    p=p+1;
+        A(curs+length(pream):curs+length(pream)+111)
+       registre = bit2registre1(A(curs+length(pream):curs+length(pream)+111),Ref_Lon,Ref_Lat)
+       list = [list registre];
+       compteur= compteur+1;
+   
+
+end
      curs=curs+1;
     
 end

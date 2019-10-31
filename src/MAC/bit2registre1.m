@@ -54,7 +54,7 @@ if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur le
     % Verification qu'on se trouve dans un cas
     if DF == 17
         registre_input.format = DF;
-        registre_input.adresse = bi2de(fliplr(bitPacket((index_adress(1):index_adress(2))-index_pre)));  % a convertir en hexa  
+        registre_input.adresse = dec2hex(bi2de(fliplr(bitPacket((index_adress(1):index_adress(2))-index_pre))));  % a convertir en hexa  
         
         ADS = bitPacket((index_Adsb(1):index_Adsb(2))-index_pre); % recup�ration des donn�es ADS
         

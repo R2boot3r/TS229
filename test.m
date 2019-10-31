@@ -3,10 +3,12 @@
 %_____________________________________________________________%
 %__________Alexandra Abulaeva & Julien Choveton-Caillat_______%
 
-
+clc;clear;close all;
 
 
 load('data/adsb_msgs.mat'); %Chargement des donn�es 
+%%load('data/buffers.mat');
+load('C:\Users\R2boot3r\Documents\TS229\data\buffers.mat')
 addpath('src/Client', 'src/General', 'src/MAC', 'src/PHY'); % Ajout d'emplacement de certains scripts/fonctions
 
 Fe = 4e6; % Frequence d'echantillonnage (imposee par le serveur)
@@ -33,31 +35,39 @@ Ref_Lat = 44.806884; %latitude de l'antenne
 
 
 A = [1 0 1 0 pream adsb_msgs(:,1)' 0 1 0 1 pream adsb_msgs(:,2)']; 
+yl = buffers(:,1)';
+rl=abs(yl).^2; %afin d eviter de chercher df
 
-
-
-a=length(A);
+a=length(rl);
 curs=1;
 list_new_registre = {};
-registre = struct('adresse',[],'format',[],'type',[],'nom',[],'altitude',[],'timeFlag',[],'cprFlag',[],'latitude',[],'longitude',[],'trajectoire',[]);
 
 compteur = 0;
 p=1;
 
-
+%pream = get_preamble(Fse);
 %% Boucle principal
 
 
 while curs< a-length(pream)-1
    
-    [maxi, dt]=synchro(A(curs:end),1,pream,Fse);
+    [maxi, dt]=synchro(rl(curs:curs+32),1,pream,Fse);
     if maxi>seuil_detection
+       maxi
        dt
        curs
-       list_new_registre = [list_new_registre   bit2registre1(A(curs+length(pream):curs+length(pream)+111),Ref_Lon,Ref_Lat)];
+       
+       [signal_recu] = demodulatePPM(rl(curs+length(pream):curs+length(pream)+112*Fse-1),Fse,length(pream),curs);
+       signal_recu
+       b = bit2registre1(signal_recu,Ref_Lon,Ref_Lat)
+        if ~isempty(b.format)
+            list_new_registre = [list_new_registre b];
+        end
+%      list_new_registre = [list_new_registre   bit2registre1(A(curs+length(pream):curs+length(pream)+112),Ref_Lon,Ref_Lat)];
        compteur = compteur + 1;
     end
-    p=p+1;
-     curs=curs+1;
-    
+    curs=curs+1;
+    if (mod(curs,1000)==0)
+        curs;
+    end
 end
