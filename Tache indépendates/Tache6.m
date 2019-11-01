@@ -16,9 +16,9 @@ load('../data/adsb_msgs.mat'); %Chargement des données
 
 List_Planes = [];
 List_Corrval = ones(1,27); 
+List_new_registre = {};
 n = 1;
-registre = struct('adresse',[],'format',[],'type',[],'nom',[],'altitude',[],'timeFlag',[],'cprFlag',[],'latitude',[],'longitude',[],'trajectoire',[]);
-
+Fe = 4e6; % Frequence d'echantillonnage (imposee par le serveur)
 
 % Variables propre à l'affichage dans la console
 
@@ -28,8 +28,10 @@ CHAR_LINE =  '+--------------+------------+--------+-----+----------+-----+-----
 
 % Variables de Position de reference de l'antenne
 
-Ref_Lon = -0.606629; %longitute de l'antenne
-Ref_Lat = 44.806884; %latitude de l'antenne
+REF_LON = -0.606629; %longitute de l'antenne
+REF_LAT = 44.806884; %latitude de l'antenne
+affiche_carte(REF_LON, REF_LAT);
+
 
 % Variable liée a la couche physique
 Fe = 4e6; % fréquence d'échantillonage du server
@@ -49,55 +51,22 @@ fprintf(DISPLAY_MASK1,'     n      ',' t (in s) ','Corr.', 'DF', '   AA   ','FTC
 fprintf(CHAR_LINE)
 
 
-% Plot trajectoire + logo avion
-STYLES = {'-','--',':'};
-STYLES_HEAD = {'x','o','<'};
-COLORS = lines(6);
-COLORS(4,:)=[];
-
-figure(1);
-hold on;
-
-%% Tracé du graph
-x = linspace(-1.3581,0.7128,1024);
-y = linspace(44.4542,45.1683,1024);
-
-[X,Y] = meshgrid(x,y(end:-1:1));
-
-%tracé de l'image
-im = imread('fond.png');
-image(x,y(end:-1:1),im);
-
-% Tracé de la position actuelle
-plot(Ref_Lon,Ref_Lat,'.r','MarkerSize',20);
-text(Ref_Lon+0.05,Ref_Lat,0,'Actual pos','color','b')
-
 
 % Variables/logo d'affichage sur la carte
 for i = 1:1:size(adsb_msgs,2)
-    registre = bit2registre(adsb_msgs(:,i)',registre,Ref_Lon,Ref_Lat);
-
-    fprintf(DISPLAY_MASK2,'            ', registre.timeFlag   ,'   1   ',registre.format,registre.nom,registre.type,'   CS   ',registre.altitude,registre.cprFlag,registre.longitude,registre.latitude,' 0 ')
-    fprintf(CHAR_LINE)
-    plot(registre.longitude,registre.latitude,'.g','MarkerSize',20);
-
-
+    registre = bit2registre(adsb_msgs(:,i)',REF_LON,REF_LAT);
+    
+    if ~isempty(registre.adresse) % On rempli la liste de registre que si on se trouve dans le ou l'avion a une adresse pour l'identifier
+        List_new_registre = [List_new_registre registre];
+    end
 end
 
-%% il va falloir rajouter en plus dans le registre le cas ou on obtiens plusieurs avions,un indice i a passer en argument de registre ? 
 
-% Definition des axes et des limites d'axes
-set(gca,'YDir','normal')
-xlabel('Longitude en degres');
-ylabel('Lattitude en degres');
-zlim([0,4e4]);
+List_Planes = update_liste_avion(List_Planes, List_new_registre, DISPLAY_MASK1, Fe, n, List_Corrval);
 
-% Bdx
-xlim([-1.3581,0.7128]);
-ylim([44.4542,45.1683]);
-
-
-
+for plane_ = List_Planes
+        plot(plane_);
+end
 
 
 

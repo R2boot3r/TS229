@@ -16,9 +16,10 @@
 
 %addpath('../PHY'); % Ajout d'emplacement de certains scripts/fonctions
 
-function registre_ouput = bit2registre(bitPacketCRC,registre_input,refLon,refLat)
+function registre_ouput = bit2registre(bitPacketCRC,refLon,refLat)
 %% Variables
 tableau_char = '_ABCDEFGHIJKLMNOPQRSTUVWXYZ_____ _______________0123456789______';
+registre_input = struct('format',[],'adresse',[],'type',[],'planeName',[],'altitude',[],'timeFlag',[],'cprf',[],'latitude',[],'longitude',[],'crcErrFlag',[]);
 
 
 % D�clarations des variables/indices local de positions
@@ -45,15 +46,15 @@ bitPacket = bitPacket';% information decod�
 
 % [bitPacket, error_flag] = CRC_decode(bitPacketCRC);
 % bitPacket = bitPacket'; % inversion ligne/colone
-
-if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur les donn�
+registre_input.crcErrFlag = error_flag;
+if registre_input.crcErrFlag == 0 % prise en compte des tram sans erreurs, aucune erreur sur les donn�
     
     DF = bi2de(fliplr(bitPacket((index_format(1):index_format(2))-index_pre)));
 
     % Verification qu'on se trouve dans un cas
     if DF == 17
         registre_input.format = DF;
-        registre_input.adresse = bi2de(fliplr(bitPacket((index_adress(1):index_adress(2))-index_pre)));  % a convertir en hexa  
+        registre_input.adresse = dec2hex(bi2de(fliplr(bitPacket((index_adress(1):index_adress(2))-index_pre))));  % a convertir en hexa  
         
         ADS = bitPacket((index_Adsb(1):index_Adsb(2))-index_pre); % recup�ration des donn�es ADS
         
@@ -71,7 +72,7 @@ if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur le
            char7 = bin2dec(num2str(ADS(45:50)));
            char8 =bin2dec(num2str(ADS(51:56)));
             
-           registre_input.nom = strcat(tableau_char(char1+1),tableau_char(char2+1),tableau_char(char3+1),tableau_char(char4+1),tableau_char(char5+1),tableau_char(char6+1),tableau_char(char7+1),tableau_char(char8+1));
+           registre_input.planeName = strcat(tableau_char(char1+1),tableau_char(char2+1),tableau_char(char3+1),tableau_char(char4+1),tableau_char(char5+1),tableau_char(char6+1),tableau_char(char7+1),tableau_char(char8+1));
         end
           
         
@@ -81,7 +82,7 @@ if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur le
             registre_input.timeFlag = bi2de(ADS(21));
             
             % Format CPR
-            registre_input.cprFlag = bi2de(ADS(22));
+            registre_input.cprf = bi2de(ADS(22));
 
             % Altitude 
             if (registre_input.type >= 5 && registre_input.type <= 8) %si l'avion est au sol altitude = 0 voir si c'est bien le cas sur bordeaux
@@ -95,7 +96,7 @@ if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur le
             % Calcule de latitude:
             
             LAT = bi2de(fliplr(ADS(23:39)));
-            Dlati = 360/(4*Nz-registre_input.cprFlag);
+            Dlati = 360/(4*Nz-registre_input.cprf);
             Mod = @(x,y)(x-y*floor(x/y));
 
             %Calcul de j:
@@ -107,21 +108,16 @@ if error_flag == 0 % prise en compte des tram sans erreurs, aucune erreur sur le
 
             Nlat = cprNL(registre_input.latitude);
             LON = bi2de(fliplr(ADS(40:56)));
-            Dloni = 360/(Nlat - registre_input.cprFlag) * (Nlat>registre_input.cprFlag) + 360 * (Nlat == registre_input.cprFlag);
+            Dloni = 360/(Nlat - registre_input.cprf) * (Nlat>registre_input.cprf) + 360 * (Nlat == registre_input.cprf);
             m = floor(refLon/Dloni) + floor(1/2 + Mod(refLon,Dloni)/Dloni - LON/2.^Nb);
             registre_input.longitude = Dloni*(m + LON/2.^Nb);
             
-            % Mise dans le vecteur trajectoire de la longitude/latitude
-            %registre_input.trajectoire = {registre_input.trajectoire; [registre_input.longitude registre_input.latitude]};
+
         end
     end
 end
-
-
-
-
 registre_ouput = registre_input;
-
+%registre_ouput = bit2registre_(bitPacketCRC,refLon,refLat);
 
 end
 

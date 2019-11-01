@@ -83,14 +83,14 @@ classdef Avion < handle
             obj.handleLogo = [];
         end
         
-        function setStyle(obj, idx)
+        function setStyle(obj, idx) % pas préciser a mettre par défault
             STYLES = {'-','--',':'};
             COLORS = lines(6);
             
             obj.color = COLORS(mod(idx-1,size(COLORS,1))+1,:);
             obj.style = STYLES{mod(floor((idx-1)/size(COLORS,1)),length(STYLES))+1};
         end
-        function setPosition(obj,lon,lat,alt)
+        function setPosition(obj,lon,lat,alt) % Pas besoin d'utiliser directement cette fonction
             if nargin < 2
                 error('Cette fonction prends au moins deux arguments : longitude, latitude')
             end
@@ -104,7 +104,7 @@ classdef Avion < handle
                 obj.trajectoire = [obj.trajectoire, [obj.longitude;obj.latitude;obj.altitude] ];
             end
         end
-        function updateWithRegister(obj,reg)
+        function updateWithRegister(obj,reg) % utiliser cette fonction pour la mise a jour du registre
             if reg.type > 0 && reg.type <= 4
                 if isempty(obj.nom) && ~isempty(reg.planeName)
                     obj.nom = reg.planeName;

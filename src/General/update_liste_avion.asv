@@ -14,7 +14,7 @@ for i = 1:length(liste_new_registre)
     n = n + 1;
     
     for j = 1:length(listOfPlanes)
-        if strcmp(listOfPlanes(j).adresse, liste_new_registre{i}.adresse)
+        if listOfPlanes(j).adresse == liste_new_registre{i}.adresse
             updateWithRegister(listOfPlanes(j),liste_new_registre{i});
             test = 1;
         end
@@ -23,11 +23,12 @@ for i = 1:length(liste_new_registre)
     if test == 0
        listOfPlanes = [Avion(liste_new_registre{i}.planeName,liste_new_registre{i}.longitude,liste_new_registre{i}.latitude...
            ,liste_new_registre{i}.altitude,liste_new_registre{i}.adresse) listOfPlanes];
-       setStyle(listOfPlanes(1), i);
+       setStyle(listOfPlanes(1), n);
     end
+    
 end
 
-%fprintf(CHAR_LINE)
+fprintf(CHAR_LINE)
 
 
 %[ listOfPlanes ] = update_liste_avion_(listOfPlanes, liste_new_registre, DISPLAY_MASK, Rs, n, liste_corrVal);

@@ -1,13 +1,16 @@
-function [seuil dt]=synchro(bits,errmax,pream,Fse)
+function [Corr, dt]=synchro(bits,errmax,pream,Fse,Pcorr)
+    %% Focntion qui permet de renvoyer la corrélation entre le signal et le préambule
     
     M=[];
     Coef=[];
-    Pcorr=sum(pream.^2); %% a sortir d'ici pas besoin de la recalculer a chaque boucle inéffica car la valeur de pream ne change jamais
-    for g=1:errmax % formule de la prediction sur des segments de 160 cases,taille de pream
-        r = sum(bits(g:g+8*Fse-1).^2); % a remplacer par g
-        M=[M ;sum(bits(g:g+8*Fse-1).*pream)./sqrt(Pcorr*r)];%Rcorr(g,1)
-        Coef=[Coef;(M(g))];
+    
+    for g = 1:errmax    % dans le cas de notre programme on parcours qu'une seul fois la boucle voir si ca ne ralenti pas trop les choses
+        
+        r = sum(bits(g:g+8*Fse-1).^2); 
+        M = [M sum(bits(g:g+8*Fse-1).*pream)./sqrt(Pcorr*r)]; %Rcorr(g,1)
+        Coef = [Coef (M(g))];
         
     end
-[seuil dt]=max(Coef);
+    
+[Corr, dt] = max(Coef);
 end

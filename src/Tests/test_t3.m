@@ -13,10 +13,10 @@ Nb = 112;
 
 %% Chaîne TX
 b = randi([0,1],1,Nb);
-c = CRC_encode(b);
+c = encodeCRC(b);
 
 %% Chaîne RX sans erreur
-[d, error_flag] = CRC_decode(c);
+[d, error_flag] = decodeCRC(c);
 
 %% Affichage du resultat
 disp(['Flag d''erreur : ', num2str(error_flag)])
@@ -24,7 +24,7 @@ disp(['Flag d''erreur : ', num2str(error_flag)])
 %% Chaîne RX avec une erreur
 idx_error = randi(Nb,1,1);
 c(idx_error) = 1 - c(idx_error);
-[d, error_flag] = CRC_decode(c);
+[d, error_flag] = decodeCRC(c);
 
 %% Affichage du resultat
 disp(['Flag d''erreur : ', num2str(error_flag)])
