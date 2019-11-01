@@ -67,7 +67,7 @@ yl= sl+nl;
 
 % demodulation
 
-signal_recu_code = demodulatePPM(yl,Fse,length(pream),0);
+signal_recu_code = demodulatePPMtache4(yl,Fse,length(pream));
 
 
 % decodeur crc

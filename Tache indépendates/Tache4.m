@@ -80,7 +80,7 @@ Pcorr=sum(pream.^2);
 
 
 % demodulation
-signal_recu=demodulatePPM(rl(dtrecu+length(pream):end),Fse);
+signal_recu=demodulatePPMtache4(rl,Fse,length(pream)+dtrecu);
 
 
 nb_erreur = 0;
@@ -133,8 +133,9 @@ for k=1:size(sigma,2)
                 [maxi dtrecuteb]=synchro(rl_teb,errmax,pream,Fse,Pcorr); % on prend le maximum du tableau,le maxim de l intercorrelation en 0 et on prend l indice de la ligne
 
                 % demodulation
-                signal_recu_teb=demodulatePPM(rl_teb(length(pream)+dtrecuteb-1:end),Fse);  
-
+                
+                signal_recu_teb=demodulatePPMtache4(rl_teb,Fse,dtrecuteb+length(pream));  
+                
                  nb_erreur = 0;
                  for lte=1:Ns
                      if (signal_recu_teb(lte) ~= signal_bits_teb(lte))
