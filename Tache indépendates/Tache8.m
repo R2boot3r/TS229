@@ -5,7 +5,7 @@
 
 clc;clear;close all;
 tic
-load('C:\Users\R2boot3r\Documents\TS229\data\buffers.mat')
+load('../data/buffers.mat')
 
 addpath('../src/Client', '../src/General', '../src/MAC', '../src/PHY'); % Ajout d'emplacement de certains scripts/fonctions
 
@@ -16,7 +16,7 @@ Fe = 4e6; % Frequence d'echantillonnage (imposee par le serveur)
 Rb = 1e6;% Debit binaire (=debit symbole)
 Fse = floor(Fe/Rb); % Nombre d'echantillons par symboles
 
-% Variables propre à l'affichage dans la console
+% Variables propre ï¿½ l'affichage dans la console
 
 DISPLAY_MASK1 = '| %12.12s | %10.10s | %6.6s | %3.3s | %8.8s | %3.3s | %8.8s | %11.11s | %4.4s | %12.12s | %12.12s | %3.3s |\n'; % Format pour l'affichage
 DISPLAY_MASK2 = '| %12.12s |      %1.0f     | %6.6s | %3.0f | %8.8s | %3.0f | %8.8s | %11.0f | %4.0f | %12.9f | %12.9f | %3.3s |\n'; % Format pour l'affichage
@@ -36,7 +36,7 @@ affiche_carte(REF_LON, REF_LAT);
 
 listOfPlanes = [];
 n = 1;
-load('C:\Users\R2boot3r\Documents\TS229\data\buffers.mat')
+load('../data/buffers.mat')
 fprintf(DISPLAY_MASK1,'     n      ',' t (in s) ','Corr.', 'DF', '  AA  ','FTC','   CS   ','ALT (in ft)','CPRF','LON (in deg)','LAT (in deg)','CRC')
 
 for k = 1:length(buffers(1,:))

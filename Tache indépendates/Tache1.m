@@ -5,7 +5,7 @@
 
 clear ;close all ; clc
 
-
+addpath('../src/Client', '../src/General', '../src/MAC', '../src/PHY'); % Ajout d'emplacement de certains scripts/fonctions
 %%
 %%%%%%%%%%%%%%%%%%%  Variables   %%%%%%%%%%%%%%%%%%%%
 
@@ -22,7 +22,8 @@ Te = 1/Fe;                                  % Période d'échantillonage
 Ts = 1e-6;                                  % Temps Symbole
 Ds = 1/Ts;                                  % Debit symbole
 Fse = Ts*Fe;                                % Facteur de sur-échantillonnage
-Ns = 112;                                  % Nombre de symbole/bits par messages
+Ns = 112;
+%Ns=5;% Nombre de symbole/bits par messages
 Nb = Ns;                                    % Nombre de bits par messages on a �galit� cas particulier d'une 2 PPM
 ecart_type = 0;
 compteur_erreur = 0;
@@ -127,7 +128,7 @@ if TEB_activation == true
                 
                 
                 % demodulation et calcul du nombre d'erreurs
-                [signal_recu_teb] = demodulatePPM(yl,Fse,0,1);
+                [signal_recu_teb] = demodulatePPM(yl,Fse);
                 nb_erreur = sum(ne(signal_recu_teb,signal_bits_teb));
                  
                  %nb_erreur = 0;
