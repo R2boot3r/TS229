@@ -89,6 +89,7 @@ classdef Avion < handle
             
             obj.color = COLORS(mod(idx-1,size(COLORS,1))+1,:);
             obj.style = STYLES{mod(floor((idx-1)/size(COLORS,1)),length(STYLES))+1};
+            set(gca,'DefaultLineLineWidth',1.5);
         end
         function setPosition(obj,lon,lat,alt) % Pas besoin d'utiliser directement cette fonction
             if nargin < 2
