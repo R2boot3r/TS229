@@ -35,8 +35,7 @@ sl = modulatePPM(b,Fse);
 Dsp0 = 0.25 * double(freq_ax==0); % ajout du ==0 pour la continuité car la fonction a un problème de continuité en 0
 
 Dsp = (Ts/4).*(sinc(freq_ax * Ts/2).^2).*(sin((pi/2)*freq_ax*Ts).^2);
-
-dspTh = abs(Dsp+ Dsp0).^2;
+dspTh = abs( Dsp + Dsp0).^2;
 
 
 
@@ -51,8 +50,8 @@ dspTh = abs(Dsp+ Dsp0).^2;
 figure,
 semilogy(freq_ax,X);
 hold on
-semilogy(freq_ax,dspTh);
-
+semilogy(freq_ax,Dsp);
+legend('DSP experimentale','DSP theorique');
 
 %%
 %%%% Commentaire

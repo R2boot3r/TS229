@@ -24,4 +24,3 @@ f = -Fe/2:Fe/Nfft:(Fe/2)-(Fe/Nfft);
 %[y, f] = Mon_Welch_(x, Nfft, Fe);
 end
 
-

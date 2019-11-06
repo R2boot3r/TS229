@@ -1,12 +1,12 @@
 
 function [ listOfPlanes ] = update_liste_avion(listOfPlanes, liste_new_registre, DISPLAY_MASK, Rs, n, liste_corrVal)
-tic;
+
 CHAR_LINE =  '+--------------+------------+--------+-----+----------+-----+----------+-------------+------+--------------+--------------+-----+\n'; % Lignes
 
 for i = 1:length(liste_new_registre)
     test = 0;
     % Affichage dans la console
-    fprintf(DISPLAY_MASK, num2str(n),num2str(toc),num2str(liste_corrVal(i)),num2str(liste_new_registre{i}.format)...
+    fprintf(DISPLAY_MASK, num2str(n),num2str(1),num2str(liste_corrVal(i)),num2str(liste_new_registre{i}.format)...
         ,num2str(liste_new_registre{i}.adresse),num2str(liste_new_registre{i}.type),num2str(liste_new_registre{i}.planeName)...
         ,num2str(liste_new_registre{i}.altitude),num2str(liste_new_registre{i}.cprf),num2str(liste_new_registre{i}.longitude)...
         ,num2str(liste_new_registre{i}.latitude),num2str(liste_new_registre{i}.crcErrFlag))

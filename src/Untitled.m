@@ -1,4 +1,4 @@
-clear ;close all ; clc
+lear ;close all ; clc
 addpath('/Client', '/General', '/MAC', '/PHY'); % Ajout d'emplacement de certains scripts/fonctions
 load('../data/buffers.mat'); %Chargement des donn�es 
 

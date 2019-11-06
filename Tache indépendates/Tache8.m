@@ -1,4 +1,4 @@
-%_____________________________________________________________%
+ %_____________________________________________________________%
 %______________Projet de Communication Numérique ____________%
 %_____________________________________________________________%
 %__________Alexandra Abulaeva & Julien Choveton-Caillat_______%
@@ -14,7 +14,7 @@ addpath('../src/Client', '../src/General', '../src/MAC', '../src/PHY'); % Ajout 
 
 Fe = 4e6; % Frequence d'echantillonnage (imposee par le serveur)
 Rb = 1e6;% Debit binaire (=debit symbole)
-Fse = floor(Fe/Rb); % Nombre d'echantillons par symboles
+Fse = floor(Fe/Rb); % Nombre ,d'echantillons par symboles
 
 % Variables propre � l'affichage dans la console
 
@@ -44,11 +44,13 @@ for k = 1:length(buffers(1,:))
     cplxBuffer = buffers(:,k)'; %%get_buffer(SERVER_ADDRESS);
     
     [liste_new_registre, liste_corrVal] = process_buffer(cplxBuffer, REF_LON, REF_LAT, seuil_detection, Fse);
+    
     listOfPlanes = update_liste_avion(listOfPlanes, liste_new_registre, DISPLAY_MASK1, Fe, n, liste_corrVal);
+    toc
     for plane_ = listOfPlanes
         plot(plane_);
     end
- 
+    
 end   
 
 

@@ -1,4 +1,4 @@
-%% ADSB Application
+ %% ADSB Application
 %% Initialisation
 clc
 clear
@@ -31,7 +31,7 @@ fprintf(CHAR_LINE)
 %% Boucle principale
 listOfPlanes = [];
 n = 1;
-load('C:\Users\R2boot3r\Documents\TS229\data\buffers.mat')
+load('..\data\buffers.mat')
 %%while true
     cprintf('blue',CHAR_LINE)
     cplxBuffer = buffers(:,1)'; %%get_buffer(SERVER_ADDRESS);

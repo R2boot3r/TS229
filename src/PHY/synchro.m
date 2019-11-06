@@ -1,5 +1,5 @@
 function [Corr, dt]=synchro(bits,errmax,pream,Fse,Pcorr)
-    %% Focntion qui permet de renvoyer la corrélation entre le signal et le préambule
+    %% Focntion qui permet de renvoyer la corrélation entre une partie du signal et le préambule
     
     M=[];
     Coef=[];
